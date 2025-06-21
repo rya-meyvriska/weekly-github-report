@@ -18,19 +18,24 @@ Grouped by repository name.
     ```bash
     gh auth login
     ```
+
 ---
 
 ## ▶️ How to Use
 
 1. **Save the script** as `weekly_report.sh`
 2. **Make it executable:**
-     ```bash
-     chmod +x weekly_report.sh
-     ```
-3. **Run the script** with start and end date (format: `YYYY-MM-DD`):
-     ```bash
-     ./weekly_report.sh --start 2025-06-15 --end 2025-06-21
-     ```
+    ```bash
+    chmod +x weekly_report.sh
+    ```
+3. **Create a `data` directory** to store your reports:
+    ```bash
+    mkdir -p data
+    ```
+4. **Run the script** with start and end date (format: `YYYY-MM-DD`). The generated markdown file will be saved in the `data` directory:
+    ```bash
+    ./weekly_report.sh --start 2025-06-15 --end 2025-06-21
+    ```
 
 ---
 
@@ -41,12 +46,12 @@ Grouped by repository name.
 
 ## Pull Requests You Created
 ### analytics-engine
-- PR#123: Fix timezone bug
+- [2025-06-16] PR#123: Fix timezone bug
 
 ### demand-sdk
-- PR#78: Add batch forecast feature
+- [2025-06-16] PR#78: Add batch forecast feature
 
 ## Pull Requests You Reviewed
 ### demand-sdk
-- Review PR#80: Refactor model evaluator
+- [2025-06-16] Review PR#80: Refactor model evaluator
 ```
