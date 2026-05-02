@@ -5,6 +5,24 @@ START_DATE=""
 END_DATE=""
 USERNAME=$(gh api user --jq .login)
 
+get_month_num() {
+    case "$1" in
+        Jan) echo "01" ;;
+        Feb) echo "02" ;;
+        Mar) echo "03" ;;
+        Apr) echo "04" ;;
+        May) echo "05" ;;
+        Jun) echo "06" ;;
+        Jul) echo "07" ;;
+        Aug) echo "08" ;;
+        Sep) echo "09" ;;
+        Oct) echo "10" ;;
+        Nov) echo "11" ;;
+        Dec) echo "12" ;;
+        *) echo "" ;;
+    esac
+}
+
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -60,7 +78,46 @@ gh search prs --reviewed-by "$USERNAME" --updated "$START_DATE..$END_DATE" --lim
     )
 '
 
+echo ""
+echo "## Meetings"
+declare -A unique_meetings
+current_date=""
+in_range=false
+day=""
+while IFS= read -r line; do
+    if [[ -z $day ]] && echo "$line" | grep -qE "^[0-9]+$"; then
+        day="$line"
+    elif [[ -n $day ]] && echo "$line" | grep -qE "^[A-Z][a-z]{2} [0-9]{4}, [A-Z][a-z]+$"; then
+        month=$(echo "$line" | cut -d' ' -f1)
+        year=$(echo "$line" | cut -d' ' -f2 | cut -d',' -f1)
+        month_num=$(get_month_num "$month")
+        if [[ -n $month_num ]]; then
+            day_padded=$(printf "%02d" "$day")
+            parsed_date="$year-$month_num-$day_padded"
+            if [ "$parsed_date" \> "$START_DATE" -o "$parsed_date" = "$START_DATE" ] && [ "$parsed_date" \< "$END_DATE" -o "$parsed_date" = "$END_DATE" ]; then
+                in_range=true
+            else
+                in_range=false
+            fi
+            current_date="$parsed_date"
+        fi
+        day=""
+    else
+        if $in_range && [[ -n $line ]]; then
+            if ! echo "$line" | grep -qE "^[0-9]{1,2}:[0-9]{2}" && ! echo "$line" | grep -q "Microsoft" && ! echo "$line" | grep -qE "^https://" && ! echo "$line" | grep -qE "^[A-Z][a-z]+ [0-9]+" && ! echo "$line" | grep -qE "^[a-z]" && ! echo "$line" | grep -qiE "office|event|floor|jl\.|rt\."; then
+                if ! echo "$line" | grep -qi "reminder"; then
+                    unique_meetings["$line"]=1
+                fi
+            fi
+        fi
+        day=""
+    fi
+done < meeting.txt
+printf '%s\n' "${!unique_meetings[@]}" | sort | while IFS= read -r meeting; do
+    echo "- $meeting"
+done
+
 } | tee "$OUT_MD"
 
 echo ""
-echo "✅ Report saved to: $OUT_DOCX"
+echo "✅ Report saved to: $OUT_MD"

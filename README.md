@@ -18,6 +18,16 @@ Grouped by repository name.
     ```bash
     gh auth login
     ```
+- **Python 3** and **pip**
+- **Google Cloud Project** for Calendar API access (if including meetings)
+
+For meetings (optional):
+1. Create a Google Cloud Project: https://console.cloud.google.com/
+2. Enable Google Calendar API
+3. Create OAuth 2.0 credentials (Desktop app)
+4. Download `client_secret.json` and save as `~/.config/weekly-report/client_secret.json`
+5. Run authentication: `python3 get_meetings.py --auth`
+6. Install Python dependencies: `pip install -r requirements.txt`
 
 ---
 
@@ -34,7 +44,7 @@ Grouped by repository name.
     ```
 4. **Run the script** with start and end date (format: `YYYY-MM-DD`). The generated markdown file will be saved in the `data` directory:
     ```bash
-    ./weekly_report.sh --start 2025-06-15 --end 2025-06-21
+    ./weekly_report.sh --start 2026-04-12 --end 2026-04-18
     ```
 
 ---
@@ -54,4 +64,9 @@ Grouped by repository name.
 ## Pull Requests You Reviewed
 ### demand-sdk
 - [2025-06-16] Review PR#80: Refactor model evaluator
+
+## Meetings
+- [2025-06-15] [Attend] Team Standup
+- [2025-06-16] [No Respond] Code Review
+- [2025-06-17] [Decline] Offsite Meeting
 ```
